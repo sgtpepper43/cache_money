@@ -24,5 +24,4 @@ defmodule CacheMoney.Adapters.Redis do
   def delete(config, key), do: command(config, ["DEL", key])
 
   defp command(config, command), do: Redix.command(config.redix_conn, command)
-
 end
