@@ -12,8 +12,7 @@ defmodule CacheMoney do
   @redix_conn :redix
 
   def start_link(config) do
-    {:ok, pid} = Redix.start_link(config.redix_url)
-    config = Map.put(config, :redix_conn, pid)
+    config = config.adapter.start_link(config)
     GenServer.start_link(__MODULE__, config)
   end
 
@@ -29,11 +28,11 @@ defmodule CacheMoney do
 
   @impl true
   def handle_call({:get, key}, _from, config) do
-    {:reply, command(config, ["GET", get_key(config.cache, key)]), config}
+    {:reply, config.adapter.get(config.cache, key), config}
   end
   def handle_call({:get_lazy, key, fun}, _from, config) do
     key = get_key(config.cache, key)
-    case command(config, ["GET", key]) do
+    case config.adapter.get(config, key) do
       {:ok, nil} ->
         value = get_and_save_lazy_value(key, fun.(), config)
         {:reply, {:ok, value}, config}
@@ -41,21 +40,21 @@ defmodule CacheMoney do
     end
   end
   def handle_call({:set, key, value}, _from, config) do
-    {:reply, command(config, ["SET", get_key(config.cache, key), value]), config}
+    {:reply, config.adapter.set(config, get_key(config.cache, key), value), config}
   end
   def handle_call({:set, key, value, expiry}, _from, config) do
-    {:reply, command(config, ["SETEX", get_key(config.cache, key), expiry, value]), config}
+    {:reply, config.adapter.set(config, get_key(config.cache, key), value, expiry), config}
   end
   def handle_call({:delete, key}, _from, config) do
-    {:reply, command(config, ["DEL", get_key(config.cache, key)]), config}
+    {:reply, config.adapter.delete(config, get_key(config.cache, key)), config}
   end
 
   defp get_and_save_lazy_value(key, {value, expiry}, config) do
-    command(config, ["SETEX", key, expiry, value])
+    config.adapter.set(config, key, value, expiry)
     value
   end
   defp get_and_save_lazy_value(key, value, config) do
-    command(config, ["SET", key, value])
+    config.adapter.set(config, key, value)
     value
   end
 
@@ -69,6 +68,4 @@ defmodule CacheMoney do
       end
     "#{prefix}#{cache}-#{key}"
   end
-
-  defp command(config, command), do: Redix.command(config.redix_conn, command)
 end
