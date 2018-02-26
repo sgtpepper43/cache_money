@@ -9,9 +9,8 @@ defmodule CacheMoney do
 
   use GenServer
 
-  @redix_conn :redix
-
   def start_link(config) do
+    config = Map.put(config, :cache, "cache-money")
     config = config.adapter.start_link(config)
     GenServer.start_link(__MODULE__, config)
   end
@@ -28,7 +27,8 @@ defmodule CacheMoney do
 
   @impl true
   def handle_call({:get, key}, _from, config) do
-    {:reply, config.adapter.get(config.cache, key), config}
+    key = get_key(config.cache, key)
+    {:reply, config.adapter.get(config, key), config}
   end
 
   def handle_call({:get_lazy, key, fun}, _from, config) do
