@@ -4,11 +4,13 @@ defmodule CacheMoney.Adapters.ETSTest do
 
   describe "a single ets cache" do
     setup do
-      {:ok, pid} = CacheMoney.start_link(%{
-        adapter: ETS,
-        table: :"cache-#{Enum.random(0..1_000_000)}",
-        purge_frequency: 50
-      })
+      {:ok, pid} =
+        CacheMoney.start_link(%{
+          adapter: ETS,
+          table: :"cache-#{Enum.random(0..1_000_000)}",
+          purge_frequency: 50
+        })
+
       %{pid: pid}
     end
 
@@ -28,11 +30,11 @@ defmodule CacheMoney.Adapters.ETSTest do
     end
 
     test "gets things lazily", %{pid: pid} do
-      assert CacheMoney.get_lazy(pid, "test", fn() -> "lazy" end) == {:ok, "lazy"}
+      assert CacheMoney.get_lazy(pid, "test", fn -> "lazy" end) == {:ok, "lazy"}
     end
 
     test "saves the result of the lazy get", %{pid: pid} do
-      assert CacheMoney.get_lazy(pid, "test", fn() -> "lazy" end) == {:ok, "lazy"}
+      assert CacheMoney.get_lazy(pid, "test", fn -> "lazy" end) == {:ok, "lazy"}
       assert CacheMoney.get(pid, "test") == {:ok, "lazy"}
     end
 
@@ -63,16 +65,20 @@ defmodule CacheMoney.Adapters.ETSTest do
 
   describe "multiple ets caches" do
     setup do
-      {:ok, pid1} = CacheMoney.start_link(%{
-        adapter: ETS,
-        table: :"cache-#{Enum.random(0..1_000_000)}",
-        purge_frequency: 50
-      })
-      {:ok, pid2} = CacheMoney.start_link(%{
-        adapter: ETS,
-        table: :"cache-#{Enum.random(0..1_000_000)}",
-        purge_frequency: 50
-      })
+      {:ok, pid1} =
+        CacheMoney.start_link(%{
+          adapter: ETS,
+          table: :"cache-#{Enum.random(0..1_000_000)}",
+          purge_frequency: 50
+        })
+
+      {:ok, pid2} =
+        CacheMoney.start_link(%{
+          adapter: ETS,
+          table: :"cache-#{Enum.random(0..1_000_000)}",
+          purge_frequency: 50
+        })
+
       %{pid1: pid1, pid2: pid2}
     end
 

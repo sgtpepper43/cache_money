@@ -7,7 +7,8 @@ defmodule CacheMoney.Adapters.ETS do
 
   @behaviour CacheMoney.Adapter
 
-  @max_cache_expiry :timer.hours(24 * 365 * 10) # 10 years
+  # 10 years
+  @max_cache_expiry :timer.hours(24 * 365 * 10)
 
   @impl true
   def start_link(config) do
@@ -20,7 +21,8 @@ defmodule CacheMoney.Adapters.ETS do
   def get(config, key), do: GenServer.call(config.ets_pid, {:get, key})
 
   @impl true
-  def set(config, key, value, expiry \\ @max_cache_expiry), do: GenServer.call(config.ets_pid, {:set, key, value, expiry})
+  def set(config, key, value, expiry \\ @max_cache_expiry),
+    do: GenServer.call(config.ets_pid, {:set, key, value, expiry})
 
   @impl true
   def delete(config, key), do: GenServer.call(config.ets_pid, {:delete, key})
@@ -32,6 +34,7 @@ defmodule CacheMoney.Adapters.ETS do
         [{^id, {_, value}}] -> value
         _ -> nil
       end
+
     {:reply, {:ok, value}, state}
   end
 

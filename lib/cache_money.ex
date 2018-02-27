@@ -71,9 +71,9 @@ defmodule CacheMoney do
       :cache_money
       |> Application.get_env(:prefix)
       |> case do
-           nil -> ""
-           prefix -> "#{prefix}-"
-         end
+        nil -> ""
+        prefix -> "#{prefix}-"
+      end
 
     "#{prefix}#{cache}-#{key}"
   end
