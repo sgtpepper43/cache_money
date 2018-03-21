@@ -9,10 +9,15 @@ defmodule CacheMoney do
 
   use GenServer
 
-  def start_link(config) do
-    config = Map.put_new(config, :cache, "cache-money")
-    config = config.adapter.start_link(config)
-    GenServer.start_link(__MODULE__, config)
+  def start_link(cache, config = %{}, opts \\ []) do
+    config =
+      config
+      |> Map.put_new(:cache, cache)
+      |> config.adapter.start_link()
+
+    opts = Keyword.put_new(opts, :name, cache)
+
+    GenServer.start_link(__MODULE__, config, opts)
   end
 
   def get(pid, key), do: GenServer.call(pid, {:get, key})
@@ -20,7 +25,6 @@ defmodule CacheMoney do
   def get_lazy(pid, key, fun), do: GenServer.call(pid, {:get_lazy, key, fun})
 
   def set(pid, key, value), do: GenServer.call(pid, {:set, key, value})
-
   def set(pid, key, value, expiry), do: GenServer.call(pid, {:set, key, value, expiry})
 
   def delete(pid, key), do: GenServer.call(pid, {:delete, key})

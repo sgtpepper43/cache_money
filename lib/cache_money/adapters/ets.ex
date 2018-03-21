@@ -61,7 +61,7 @@ defmodule CacheMoney.Adapters.ETS do
 
   @impl true
   def init(config) do
-    table = Map.get(config, :table, __MODULE__)
+    table = Map.get(config, :cache)
     purge_frequency = Map.get(config, :purge_frequency, :timer.minutes(5))
     :ets.new(table, [:named_table, :set, :private])
     {:ok, Map.merge(config, %{table: table, purge_frequency: purge_frequency})}

@@ -5,9 +5,8 @@ defmodule CacheMoney.Adapters.ETSTest do
   describe "a single ets cache" do
     setup do
       {:ok, pid} =
-        CacheMoney.start_link(%{
+        CacheMoney.start_link(:"cache-#{Enum.random(0..1_000_000)}", %{
           adapter: ETS,
-          cache: :"cache-#{Enum.random(0..1_000_000)}",
           purge_frequency: 50
         })
 
@@ -66,16 +65,14 @@ defmodule CacheMoney.Adapters.ETSTest do
   describe "multiple ets caches" do
     setup do
       {:ok, pid1} =
-        CacheMoney.start_link(%{
+        CacheMoney.start_link(:"cache-#{Enum.random(0..1_000_000)}", %{
           adapter: ETS,
-          table: :"cache-#{Enum.random(0..1_000_000)}",
           purge_frequency: 50
         })
 
       {:ok, pid2} =
-        CacheMoney.start_link(%{
+        CacheMoney.start_link(:"cache-#{Enum.random(0..1_000_000)}", %{
           adapter: ETS,
-          table: :"cache-#{Enum.random(0..1_000_000)}",
           purge_frequency: 50
         })
 
