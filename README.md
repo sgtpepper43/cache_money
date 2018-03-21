@@ -8,17 +8,17 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
   1. Add `cache_money` to your list of dependencies in `mix.exs`:
 
-    ```elixir
-    def deps do
-      [{:cache_money, "~> 0.1.0"}]
-    end
-    ```
+  ```elixir
+  def deps do
+    [{:cache_money, "~> 0.1.0"}]
+  end
+  ```
 
   2. Ensure `cache_money` is started before your application:
 
-    ```elixir
-    def application do
-      [applications: [:cache_money]]
-    end
-    ```
+  ```elixir
+  def application do
+    [applications: [:cache_money]]
+  end
+  ```
 
