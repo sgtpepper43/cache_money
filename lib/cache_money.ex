@@ -10,7 +10,7 @@ defmodule CacheMoney do
   use GenServer
 
   def start_link(config) do
-    config = Map.put(config, :cache, "cache-money")
+    config = Map.put_new(config, :cache, "cache-money")
     config = config.adapter.start_link(config)
     GenServer.start_link(__MODULE__, config)
   end
@@ -24,6 +24,11 @@ defmodule CacheMoney do
   def set(pid, key, value, expiry), do: GenServer.call(pid, {:set, key, value, expiry})
 
   def delete(pid, key), do: GenServer.call(pid, {:delete, key})
+
+  @impl true
+  def init(args) do
+    {:ok, args}
+  end
 
   @impl true
   def handle_call({:get, key}, _from, config) do
@@ -67,14 +72,6 @@ defmodule CacheMoney do
   end
 
   defp get_key(cache, key) do
-    prefix =
-      :cache_money
-      |> Application.get_env(:prefix)
-      |> case do
-        nil -> ""
-        prefix -> "#{prefix}-"
-      end
-
-    "#{prefix}#{cache}-#{key}"
+    "#{cache}-#{key}"
   end
 end
