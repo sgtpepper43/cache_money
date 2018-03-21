@@ -25,7 +25,8 @@ defmodule CacheMoney.Mixfile do
 
   defp deps do
     [
-      {:redix, "~> 0.6.0", optional: true}
+      {:redix, "~> 0.6.0", optional: true},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 end
