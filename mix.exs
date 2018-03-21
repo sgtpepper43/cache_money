@@ -8,7 +8,14 @@ defmodule CacheMoney.Mixfile do
       elixir: "~> 1.5",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      description: "ETS or Redis based caching for Elixir",
+      package: [
+        licenses: ["MIT"],
+        maintainers: ["Trevor Fenn<sgtpepper43@gmail.com>"],
+        links: %{"GitHub" => "https://github.com/sgtpepper43/cache_money"},
+        files: ["lib", "mix.exs", "README*", "LICENSE*"]
+      ]
     ]
   end
 
