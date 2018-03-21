@@ -7,7 +7,7 @@ defmodule CacheMoney.Adapters.ETSTest do
       {:ok, pid} =
         CacheMoney.start_link(%{
           adapter: ETS,
-          table: :"cache-#{Enum.random(0..1_000_000)}",
+          cache: :"cache-#{Enum.random(0..1_000_000)}",
           purge_frequency: 50
         })
 
