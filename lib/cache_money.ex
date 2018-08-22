@@ -22,7 +22,7 @@ defmodule CacheMoney do
 
   def get(pid, key), do: GenServer.call(pid, {:get, key})
 
-  def get_lazy(pid, key, fun), do: GenServer.call(pid, {:get_lazy, key, fun})
+  def get_lazy(pid, key, fun, expiry \\ nil), do: GenServer.call(pid, {:get_lazy, key, fun, expiry})
 
   def set(pid, key, value), do: GenServer.call(pid, {:set, key, value})
   def set(pid, key, value, expiry), do: GenServer.call(pid, {:set, key, value, expiry})
@@ -40,13 +40,13 @@ defmodule CacheMoney do
     {:reply, config.adapter.get(config, key), config}
   end
 
-  def handle_call({:get_lazy, key, fun}, _from, config) do
+  def handle_call({:get_lazy, key, fun, expiry}, _from, config) do
     key = get_key(config.cache, key)
 
     case config.adapter.get(config, key) do
       {:ok, nil} ->
-        value = get_and_save_lazy_value(key, fun.(), config)
-        {:reply, {:ok, value}, config}
+        value = get_and_save_lazy_value(key, fun.(), expiry, config)
+        {:reply, value, config}
 
       value ->
         {:reply, value, config}
@@ -65,14 +65,26 @@ defmodule CacheMoney do
     {:reply, config.adapter.delete(config, get_key(config.cache, key)), config}
   end
 
-  defp get_and_save_lazy_value(key, {value, expiry}, config) do
-    config.adapter.set(config, key, value, expiry)
-    value
+  defp get_and_save_lazy_value(key, {:ok, value}, nil, config) do
+    config.adapter.set(config, key, value)
+    {:ok, value}
   end
 
-  defp get_and_save_lazy_value(key, value, config) do
+  defp get_and_save_lazy_value(key, {:ok, value}, expiry, config) do
+    config.adapter.set(config, key, value, expiry)
+    {:ok, value}
+  end
+
+  defp get_and_save_lazy_value(_key, {:error, error}, _, _config), do: {:error, error}
+
+  defp get_and_save_lazy_value(key, value, nil, config) do
     config.adapter.set(config, key, value)
-    value
+    {:ok, value}
+  end
+
+  defp get_and_save_lazy_value(key, value, expiry, config) do
+    config.adapter.set(config, key, value, expiry)
+    {:ok, value}
   end
 
   defp get_key(cache, key) do

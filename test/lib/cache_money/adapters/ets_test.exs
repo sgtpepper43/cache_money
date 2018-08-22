@@ -37,6 +37,16 @@ defmodule CacheMoney.Adapters.ETSTest do
       assert CacheMoney.get(pid, "test") == {:ok, "lazy"}
     end
 
+    test "saves the lazy get if it returns an ok tuple", %{pid: pid} do
+      assert CacheMoney.get_lazy(pid, "test", fn -> {:ok, "lazy"} end) == {:ok, "lazy"}
+      assert CacheMoney.get(pid, "test") == {:ok, "lazy"}
+    end
+
+    test "does not save the lazy get if it returns an error tuple", %{pid: pid} do
+      assert CacheMoney.get_lazy(pid, "test", fn -> {:error, "error"} end) == {:error, "error"}
+      assert CacheMoney.get(pid, "test") == {:ok, nil}
+    end
+
     test "overwrites old values", %{pid: pid} do
       CacheMoney.set(pid, "test", 1)
       assert CacheMoney.get(pid, "test") == {:ok, 1}
