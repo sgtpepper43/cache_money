@@ -22,7 +22,8 @@ defmodule CacheMoney do
 
   def get(pid, key), do: GenServer.call(pid, {:get, key})
 
-  def get_lazy(pid, key, fun, expiry \\ nil), do: GenServer.call(pid, {:get_lazy, key, fun, expiry})
+  def get_lazy(pid, key, fun, expiry \\ nil),
+    do: GenServer.call(pid, {:get_lazy, key, fun, expiry})
 
   def set(pid, key, value), do: GenServer.call(pid, {:set, key, value})
   def set(pid, key, value, expiry), do: GenServer.call(pid, {:set, key, value, expiry})
