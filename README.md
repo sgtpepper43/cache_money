@@ -34,12 +34,12 @@ CacheMoney.get(cache, :foo)
 # "bar"
 ```
 
-`set` also includes an `expiry` param, should you want the value in the cache to expire (expiry is in milliseconds)
+`set` also includes an `expiry` param, should you want the value in the cache to expire (expiry is in seconds)
 
 ```elixir
 CacheMoney.set(cache, :foo, "bar", 10)
 CacheMoney.get(cache, :foo)
-# More than 10 milliseconds later
+# More than 10 seconds later
 CacheMoney.get(cache, :foo)
 # nil
 ```

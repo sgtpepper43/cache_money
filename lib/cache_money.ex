@@ -63,7 +63,7 @@ defmodule CacheMoney do
   @doc """
   Gets the value out of the cache using the `key`. Lazily fetches the data, inserts
   it into the cache, and returns it if it does not exist. Optional `expiry` is in
-  milliseconds.
+  seconds.
   """
   @spec set(pid, key, (() -> value), integer) :: {:ok, value} | {:error, any}
   def get_lazy(pid, key, fun, expiry \\ nil),
@@ -76,7 +76,7 @@ defmodule CacheMoney do
   def set(pid, key, value), do: GenServer.call(pid, {:set, key, value})
 
   @doc """
-  Sets `key` in the cache to `value`, which expires after `expiry` milliseconds
+  Sets `key` in the cache to `value`, which expires after `expiry` seconds
   """
   @spec set(pid, key, value, integer) :: {:ok, value} | {:error, any}
   def set(pid, key, value, expiry), do: GenServer.call(pid, {:set, key, value, expiry})
