@@ -40,7 +40,7 @@ defmodule CacheMoney.Adapters.ETS do
 
   @impl true
   def handle_call({:set, id, value, expiry}, _, %{table: table} = state) do
-    true = :ets.insert(table, {id, {System.monotonic_time(:seconds) + expiry, value}})
+    true = :ets.insert(table, {id, {System.monotonic_time(:milliseconds) + expiry, value}})
     {:reply, {:ok, value}, state}
   end
 
@@ -52,7 +52,7 @@ defmodule CacheMoney.Adapters.ETS do
 
   @impl true
   def handle_info(:purge, %{purge_frequency: purge_frequency, table: table} = state) do
-    now = System.monotonic_time(:seconds)
+    now = System.monotonic_time(:milliseconds)
     match_spec = [{{:"$1", {:"$2", :_}}, [{:<, :"$2", {:const, now}}], [true]}]
     :ets.select_delete(table, match_spec)
     Process.send_after(self(), :purge, purge_frequency)
