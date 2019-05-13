@@ -1,7 +1,7 @@
 defmodule CacheMoney.Mixfile do
   use Mix.Project
 
-  @version "0.5.1"
+  @version "0.5.2"
 
   def project do
     [
@@ -41,7 +41,7 @@ defmodule CacheMoney.Mixfile do
       canonical: "http://hexdocs.pm/cache_money",
       source_url: "https://github.com/sgtpepper43/cache_money",
       groups_for_modules: [
-        "Adapters": [
+        Adapters: [
           CacheMoney.Adapter,
           CacheMoney.Adapters.ETS,
           CacheMoney.Adapters.Redis

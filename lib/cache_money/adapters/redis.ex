@@ -18,7 +18,8 @@ defmodule CacheMoney.Adapters.Redis do
   def set(config, key, value), do: command(config, ["SET", key, value])
 
   @impl true
-  def set(config, key, value, expiry), do: command(config, ["SETEX", key, convert_expiry(expiry), value])
+  def set(config, key, value, expiry),
+    do: command(config, ["SETEX", key, convert_expiry(expiry), value])
 
   @impl true
   def delete(config, key), do: command(config, ["DEL", key])

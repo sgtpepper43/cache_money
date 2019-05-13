@@ -8,7 +8,7 @@ The package can be installed by adding `cache_money` to your list of dependencie
 
 ```elixir
 def deps do
-  [{:cache_money, "~> 0.4.1"}]
+  [{:cache_money, "~> 0.5.2"}]
 end
 ```
 
