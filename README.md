@@ -1,14 +1,22 @@
 # CacheMoney
 
+[![Module Version](https://img.shields.io/hexpm/v/cache_money.svg)](https://hex.pm/packages/cache_money)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/cache_money/)
+[![Total Download](https://img.shields.io/hexpm/dt/cache_money.svg)](https://hex.pm/packages/cache_money)
+[![License](https://img.shields.io/hexpm/l/cache_money.svg)](https://github.com/sgtpepper43/cache_money/blob/master/LICENSE.md)
+[![Last Updated](https://img.shields.io/github/last-commit/sgtpepper43/cache_money.svg)](https://github.com/sgtpepper43/cache_money/commits/master)
+
 Simple caching for Elixir using ETS or Redis
 
 ## Installation
 
-The package can be installed by adding `cache_money` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `:cache_money` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:cache_money, "~> 0.5.2"}]
+  [
+    {:cache_money, "~> 0.5.2"}
+  ]
 end
 ```
 
@@ -52,3 +60,10 @@ CacheMoney.get_lazy(cache, :foo, fn -> "expensive to get data" end)
 CacheMoney.get_lazy(cache, :foo, fn -> "I don't get executed" end)
 # "expensive to get data"
 ```
+
+## Copyright and License
+
+Copyright (c) 2018 Trevor Fenn
+
+This work is free. You can redistribute it and/or modify it under the
+terms of the MIT License. See the [LICENSE.md](./LICENSE.md) file for more details.
