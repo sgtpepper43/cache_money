@@ -33,6 +33,8 @@ defmodule CacheMoney do
   """
   @type options :: [timeout: integer]
 
+  @type lazy_function :: (() -> {:ok, value} | {:ok, value, integer} | {:error, value} | value)
+
   @type server :: Genserver.server()
 
   @doc """
@@ -76,7 +78,7 @@ defmodule CacheMoney do
   it into the cache, and returns it if it does not exist. Optional `expiry` is in
   seconds.
   """
-  @spec set(server, key, (() -> value), integer, options()) :: {:ok, value} | {:error, any}
+  @spec get_lazy(server, key, lazy_function(), integer, options()) :: {:ok, value} | {:error, any}
   def get_lazy(server, key, fun, expiry \\ nil, opts \\ []),
     do: GenServer.call(server, {:get_lazy, key, fun, expiry}, opts[:timeout] || @default_timeout)
 
@@ -145,6 +147,11 @@ defmodule CacheMoney do
 
   defp get_and_save_lazy_value(key, {:ok, value}, nil, config) do
     config.adapter.set(config, key, value)
+    {:ok, value}
+  end
+
+  defp get_and_save_lazy_value(key, {:ok, value, expiry}, nil, config) do
+    config.adapter.set(config, key, value, expiry)
     {:ok, value}
   end
 
