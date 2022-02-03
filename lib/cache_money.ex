@@ -33,6 +33,8 @@ defmodule CacheMoney do
   """
   @type options :: [timeout: integer]
 
+  @type server :: Genserver.server()
+
   @doc """
   Starts a `CacheMoney` process linked to the current process.
 
@@ -65,45 +67,45 @@ defmodule CacheMoney do
 
   If the value does not exist in the cache `nil` will be returned.
   """
-  @spec get(pid, key, options()) :: {:ok, value} | {:error, term}
-  def get(pid, key, opts \\ []),
-    do: GenServer.call(pid, {:get, key}, opts[:timeout] || @default_timeout)
+  @spec get(server, key, options()) :: {:ok, value} | {:error, term}
+  def get(server, key, opts \\ []),
+    do: GenServer.call(server, {:get, key}, opts[:timeout] || @default_timeout)
 
   @doc """
   Gets the value out of the cache using the `key`. Lazily fetches the data, inserts
   it into the cache, and returns it if it does not exist. Optional `expiry` is in
   seconds.
   """
-  @spec set(pid, key, (() -> value), integer, options()) :: {:ok, value} | {:error, any}
-  def get_lazy(pid, key, fun, expiry \\ nil, opts \\ []),
-    do: GenServer.call(pid, {:get_lazy, key, fun, expiry}, opts[:timeout] || @default_timeout)
+  @spec set(server, key, (() -> value), integer, options()) :: {:ok, value} | {:error, any}
+  def get_lazy(server, key, fun, expiry \\ nil, opts \\ []),
+    do: GenServer.call(server, {:get_lazy, key, fun, expiry}, opts[:timeout] || @default_timeout)
 
   @doc """
   Sets `key` in the cache to `value`
   """
-  @spec set(pid, key, value) :: {:ok, value} | {:error, any}
-  def set(pid, key, value), do: GenServer.call(pid, {:set, key, value})
+  @spec set(server, key, value) :: {:ok, value} | {:error, any}
+  def set(server, key, value), do: GenServer.call(server, {:set, key, value})
 
   @doc """
   Sets `key` in the cache to `value`
   """
-  @spec set(pid, key, value, options()) :: {:ok, value} | {:error, any}
-  def set(pid, key, value, opts) when is_list(opts),
-    do: GenServer.call(pid, {:set, key, value}, opts[:timeout] || @default_timeout)
+  @spec set(server, key, value, options()) :: {:ok, value} | {:error, any}
+  def set(server, key, value, opts) when is_list(opts),
+    do: GenServer.call(server, {:set, key, value}, opts[:timeout] || @default_timeout)
 
   @doc """
   Sets `key` in the cache to `value`, which expires after `expiry` seconds
   """
-  @spec set(pid, key, value, integer, options()) :: {:ok, value} | {:error, any}
-  def set(pid, key, value, expiry, opts \\ []),
-    do: GenServer.call(pid, {:set, key, value, expiry}, opts[:timeout] || @default_timeout)
+  @spec set(server, key, value, integer, options()) :: {:ok, value} | {:error, any}
+  def set(server, key, value, expiry, opts \\ []),
+    do: GenServer.call(server, {:set, key, value, expiry}, opts[:timeout] || @default_timeout)
 
   @doc """
   Deletes the `key` from the cache
   """
-  @spec delete(pid, key, options()) :: {:ok, value} | {:error, term}
-  def delete(pid, key, opts \\ []),
-    do: GenServer.call(pid, {:delete, key}, opts[:timeout] || @default_timeout)
+  @spec delete(server, key, options()) :: {:ok, value} | {:error, term}
+  def delete(server, key, opts \\ []),
+    do: GenServer.call(server, {:delete, key}, opts[:timeout] || @default_timeout)
 
   @impl true
   def init(args) do
