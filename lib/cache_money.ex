@@ -35,7 +35,7 @@ defmodule CacheMoney do
 
   @type lazy_function :: (() -> {:ok, value} | {:ok, value, integer} | {:error, value} | value)
 
-  @type server :: Genserver.server()
+  @type server :: GenServer.server()
 
   @doc """
   Starts a `CacheMoney` process linked to the current process.
@@ -52,7 +52,7 @@ defmodule CacheMoney do
   * opts - see `GenServer.start_link/3`. Options are passed straight through to the
     underlying `GenServer`
   """
-  @spec start_link(cache_name, %{}, Keyword.t()) :: pid()
+  @spec start_link(cache_name, map(), Keyword.t()) :: GenServer.on_start()
   def start_link(cache, config = %{}, opts \\ []) do
     config =
       config
@@ -78,7 +78,8 @@ defmodule CacheMoney do
   it into the cache, and returns it if it does not exist. Optional `expiry` is in
   seconds.
   """
-  @spec get_lazy(server, key, lazy_function(), integer, options()) :: {:ok, value} | {:error, any}
+  @spec get_lazy(server, key, lazy_function(), integer | nil, options()) ::
+          {:ok, value} | {:error, any}
   def get_lazy(server, key, fun, expiry \\ nil, opts \\ []),
     do: GenServer.call(server, {:get_lazy, key, fun, expiry}, opts[:timeout] || @default_timeout)
 

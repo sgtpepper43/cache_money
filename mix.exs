@@ -2,19 +2,24 @@ defmodule CacheMoney.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/sgtpepper43/cache_money"
-  @version "0.5.5"
+  @version "0.6.0"
 
   def project do
     [
       app: :cache_money,
       version: @version,
-      elixir: "~> 1.7",
+      elixir: "~> 1.11",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
       name: "Cache Money",
-      docs: docs()
+      docs: docs(),
+      dialyzer: [
+        plt_add_apps: [:mix],
+        plt_add_deps: :transitive,
+        ignore_warnings: ".dialyzer.ignore-warnings"
+      ]
     ]
   end
 
@@ -24,8 +29,9 @@ defmodule CacheMoney.Mixfile do
 
   defp deps do
     [
-      {:redix, "~> 0.6.0", optional: true},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:redix, "~> 1.1", optional: true}
     ]
   end
 
