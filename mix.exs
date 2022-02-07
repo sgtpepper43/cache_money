@@ -2,7 +2,7 @@ defmodule CacheMoney.Mixfile do
   use Mix.Project
 
   @source_url "https://github.com/sgtpepper43/cache_money"
-  @version "0.6.0"
+  @version "0.6.1"
 
   def project do
     [

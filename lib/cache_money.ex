@@ -116,17 +116,17 @@ defmodule CacheMoney do
   end
 
   @impl true
-  def handle_call({:get, key}, _from, config) do
+  def handle_call({:get, key}, from, config) do
     key = get_key(config.cache, key)
-    {:reply, config.adapter.get(config, key), config}
+    {:reply, config.adapter.get(with_caller(config, from), key), config}
   end
 
-  def handle_call({:get_lazy, key, fun, expiry}, _from, config) do
+  def handle_call({:get_lazy, key, fun, expiry}, from, config) do
     key = get_key(config.cache, key)
 
-    case config.adapter.get(config, key) do
+    case config.adapter.get(with_caller(config, from), key) do
       {:ok, nil} ->
-        value = get_and_save_lazy_value(key, fun.(), expiry, config)
+        value = get_and_save_lazy_value(key, fun.(), expiry, with_caller(config, from))
         {:reply, value, config}
 
       value ->
@@ -134,16 +134,23 @@ defmodule CacheMoney do
     end
   end
 
-  def handle_call({:set, key, value}, _from, config) do
-    {:reply, config.adapter.set(config, get_key(config.cache, key), value), config}
+  def handle_call({:set, key, value}, from, config) do
+    {:reply, config.adapter.set(with_caller(config, from), get_key(config.cache, key), value),
+     config}
   end
 
-  def handle_call({:set, key, value, expiry}, _from, config) do
-    {:reply, config.adapter.set(config, get_key(config.cache, key), value, expiry), config}
+  def handle_call({:set, key, value, expiry}, from, config) do
+    {:reply,
+     config.adapter.set(
+       with_caller(config, from),
+       get_key(config.cache, key),
+       value,
+       expiry
+     ), config}
   end
 
-  def handle_call({:delete, key}, _from, config) do
-    {:reply, config.adapter.delete(config, get_key(config.cache, key)), config}
+  def handle_call({:delete, key}, from, config) do
+    {:reply, config.adapter.delete(with_caller(config, from), get_key(config.cache, key)), config}
   end
 
   defp get_and_save_lazy_value(key, {:ok, value}, nil, config) do
@@ -176,4 +183,6 @@ defmodule CacheMoney do
   defp get_key(cache, key) do
     "#{cache}-#{key}"
   end
+
+  defp with_caller(config, {caller, _}), do: Map.put(config, :caller, caller)
 end

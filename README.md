@@ -15,7 +15,7 @@ The package can be installed by adding `:cache_money` to your list of dependenci
 ```elixir
 def deps do
   [
-    {:cache_money, "~> 0.5.2"}
+    {:cache_money, "~> 0.6.1"}
   ]
 end
 ```
@@ -60,6 +60,21 @@ CacheMoney.get_lazy(cache, :foo, fn -> "expensive to get data" end)
 CacheMoney.get_lazy(cache, :foo, fn -> "I don't get executed" end)
 # "expensive to get data"
 ```
+
+## Testing
+
+The `CacheMoney.Adapters.Sandbox` adapter has been provided to help with testing. To use it,
+set your cache's adapter to `Sandbox` in your test env config, then in your test module do:
+
+```elixir
+setup do
+  Sandbox.checkout(YourCache)
+  on_exit(fn -> Sandbox.checkin(YourCache) end)
+  :ok
+end
+```
+
+A good
 
 ## Copyright and License
 
