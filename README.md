@@ -15,7 +15,7 @@ The package can be installed by adding `:cache_money` to your list of dependenci
 ```elixir
 def deps do
   [
-    {:cache_money, "~> 0.6.1"}
+    {:cache_money, "~> 0.6.2"}
   ]
 end
 ```

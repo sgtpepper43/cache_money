@@ -88,9 +88,7 @@ defmodule CacheMoney.Adapters.Sandbox do
 
   @impl GenServer
   def handle_call({:delete, pid, key}, _, cache) do
-    cache = Map.delete(cache[pid], key)
-
-    {:reply, {:ok, :ok}, cache}
+    {:reply, {:ok, :ok}, Map.update!(cache, pid, &Map.delete(&1, key))}
   end
 
   defp get_sandbox(cache), do: :"#{cache}.Sandbox"
